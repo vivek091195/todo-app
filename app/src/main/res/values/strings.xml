@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">TodoList</string>
+    <string name="app_title">TODO</string>
+    <string name="theme_icon_desc">theme icon</string>
+    <string name="edit_text_hint">Create a new todo...</string>
+    <string name="clear_todo_item">clear the todo item</string>
 </resources>

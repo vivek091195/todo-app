@@ -2,6 +2,10 @@
     <string name="app_name">TodoList</string>
     <string name="app_title">TODO</string>
     <string name="theme_icon_desc">theme icon</string>
-    <string name="edit_text_hint">Create a new todo...</string>
+    <string name="edit_text_hint">Create a new todo…</string>
     <string name="clear_todo_item">clear the todo item</string>
+    <string name="select_all">All</string>
+    <string name="active_list">Active</string>
+    <string name="completed_list">Completed</string>
+    <string name="instruction">Drag and drop to reorder list</string>
 </resources>

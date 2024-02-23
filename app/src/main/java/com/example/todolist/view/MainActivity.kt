@@ -4,34 +4,29 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
+import androidx.lifecycle.viewModelScope
 import com.example.todolist.R
 import com.example.todolist.databinding.MainBinding
 import com.example.todolist.model.Todo
 import com.example.todolist.model.TodoStates
 import com.example.todolist.viewmodel.MainViewModel
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private lateinit var mainBinding: MainBinding
     private var enteredText: String = ""
     val mainViewModel by viewModels<MainViewModel>()
+    val adapter = TodoAdapter()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        mainViewModel.storeTodo(this, Todo(1, "Hey there", TodoStates.ACTIVE, System.currentTimeMillis()))
-        mainViewModel.retrieveTodos(this)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
         mainBinding = MainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
+
         setUpUI()
+        setupStateFlowListeners()
     }
 
     private fun setUpUI() {
@@ -48,12 +43,24 @@ class MainActivity : ComponentActivity() {
         })
 
         mainBinding.todoRadioInput.setOnClickListener {
+            Log.d("MainActivity", "I am being called")
             mainViewModel.storeTodo(it.context, Todo(
                 1,
                 enteredText,
                 TodoStates.ACTIVE,
                 System.currentTimeMillis()
             ))
+            mainViewModel.retrieveTodos(it.context)
+        }
+
+        mainBinding.todoList.adapter = adapter
+    }
+
+    private fun setupStateFlowListeners() {
+        mainViewModel.viewModelScope.launch {
+            mainViewModel.todoState.collect {
+                adapter.submitList(it.allTodos)
+            }
         }
     }
 }

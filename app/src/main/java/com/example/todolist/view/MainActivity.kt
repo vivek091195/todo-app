@@ -30,6 +30,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun setUpUI() {
+        mainViewModel.retrieveTodos(this)
         mainBinding.todoTextInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -50,7 +51,10 @@ class MainActivity : ComponentActivity() {
                 TodoStates.ACTIVE,
                 System.currentTimeMillis()
             ))
-            mainViewModel.retrieveTodos(it.context)
+        }
+
+        mainBinding.clearCompleteBtn.setOnClickListener {
+            mainViewModel.clearTodos(it.context)
         }
 
         mainBinding.todoList.adapter = adapter

@@ -8,4 +8,5 @@
     <string name="active_list">Active</string>
     <string name="completed_list">Completed</string>
     <string name="instruction">Drag and drop to reorder list</string>
+    <string name="clear_all">Clear Completed</string>
 </resources>

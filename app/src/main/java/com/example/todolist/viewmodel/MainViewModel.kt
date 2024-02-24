@@ -14,6 +14,7 @@ class MainViewModel : ViewModel() {
     val todoState = _todoState.asStateFlow()
     internal fun storeTodo(context: Context, todo: Todo) {
         SharedPreferencesUtility.writeToPreferences(context, todo)
+        retrieveTodos(context)
     }
 
     internal fun retrieveTodos(context: Context) {
@@ -30,6 +31,11 @@ class MainViewModel : ViewModel() {
                 }
             )
         }
+    }
+
+    internal fun clearTodos(context: Context) {
+        SharedPreferencesUtility.clearPreferences(context)
+        retrieveTodos(context)
     }
 
     data class TodoState(

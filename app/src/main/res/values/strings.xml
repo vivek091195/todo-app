@@ -9,4 +9,6 @@
     <string name="completed_list">Completed</string>
     <string name="instruction">Drag and drop to reorder list</string>
     <string name="clear_all">Clear Completed</string>
+    <string name="empty_todo_list">empty todo list</string>
+    <string name="empty_todo_title">No Todo Yet</string>
 </resources>

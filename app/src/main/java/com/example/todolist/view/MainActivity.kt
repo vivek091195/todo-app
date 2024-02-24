@@ -7,6 +7,7 @@ import android.text.TextWatcher
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
+import androidx.core.view.isVisible
 import androidx.lifecycle.viewModelScope
 import com.example.todolist.R
 import com.example.todolist.databinding.MainBinding
@@ -33,6 +34,7 @@ class MainActivity : ComponentActivity() {
         mainViewModel.retrieveTodos(this)
         mainBinding.todoTextInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                mainBinding.todoRadioInput.isChecked = false
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -44,13 +46,15 @@ class MainActivity : ComponentActivity() {
         })
 
         mainBinding.todoRadioInput.setOnClickListener {
-            Log.d("MainActivity", "I am being called")
+            if(enteredText.isEmpty())
+                return@setOnClickListener
             mainViewModel.storeTodo(it.context, Todo(
                 1,
                 enteredText,
                 TodoStates.ACTIVE,
                 System.currentTimeMillis()
             ))
+            mainBinding.todoTextInput.setText("")
         }
 
         mainBinding.clearCompleteBtn.setOnClickListener {
@@ -63,6 +67,19 @@ class MainActivity : ComponentActivity() {
     private fun setupStateFlowListeners() {
         mainViewModel.viewModelScope.launch {
             mainViewModel.todoState.collect {
+                if(it.allTodos.isNullOrEmpty()) {
+                    mainBinding.emptyTodoSection.isVisible = true
+                    mainBinding.todoItemsCard.isVisible = false
+                    mainBinding.detailedSection.isVisible = false
+                    mainBinding.filterSection.isVisible = false
+                    mainBinding.instruction.isVisible = false
+                } else {
+                    mainBinding.emptyTodoSection.isVisible = false
+                    mainBinding.todoItemsCard.isVisible = true
+                    mainBinding.detailedSection.isVisible = true
+                    mainBinding.filterSection.isVisible = true
+                    mainBinding.instruction.isVisible = true
+                }
                 adapter.submitList(it.allTodos)
             }
         }

@@ -8,6 +8,12 @@ enum class TodoStates {
 data class Todo(
     val id: Int,
     val title: String,
-    val status: TodoStates,
+    var status: TodoStates,
     val timestamp: Long
 )
+
+enum class ActiveTodoSection {
+    ALL,
+    COMPLETED,
+    ACTIVE
+}

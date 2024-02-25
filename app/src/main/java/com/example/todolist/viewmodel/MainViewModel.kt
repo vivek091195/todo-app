@@ -19,27 +19,32 @@ class MainViewModel : ViewModel() {
 
     internal fun retrieveTodos(context: Context) {
         val todos: List<Todo> = SharedPreferencesUtility.readFromPreferences(context)
+        val allTodos = todos.map {
+            TodoState.Todo(
+                id = it.id,
+                title = it.title,
+                status = it.status,
+                timestamp = it.timestamp
+            )
+        }
         _todoState.update {
             it.copy(
-                allTodos = todos.map {
-                    TodoState.Todo(
-                        id = it.id,
-                        title = it.title,
-                        status = it.status,
-                        timestamp = it.timestamp
-                    )
-                }
+                allTodos = allTodos,
+                activeTodos = allTodos.filter { it.status == TodoStates.ACTIVE },
+                completedTodos = allTodos.filter { it.status == TodoStates.COMPLETED }
             )
         }
     }
 
-    internal fun clearTodos(context: Context) {
-        SharedPreferencesUtility.clearPreferences(context)
+    internal fun clearCompletedTodos(context: Context) {
+        SharedPreferencesUtility.clearCompletedPreferences(context)
         retrieveTodos(context)
     }
 
     data class TodoState(
-        val allTodos: List<Todo>? = null
+        val allTodos: List<Todo>? = null,
+        val activeTodos: List<Todo>? = null,
+        val completedTodos: List<Todo>? = null
     ) {
         data class Todo(
             val id: Int,

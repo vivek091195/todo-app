@@ -161,16 +161,21 @@
             android:textColor="#9495a5"
             android:fontFamily="@font/index"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
-        <TextView
+        <Button
             android:id="@+id/clear_complete_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:text="@string/clear_all"
+            android:textFontWeight="700"
+            android:background="@android:color/transparent"
+            android:textAllCaps="false"
             android:textColor="#9495a5"
             android:fontFamily="@font/index"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -186,36 +191,45 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/instruction"
         app:layout_constraintTop_toBottomOf="@id/detailed_section">
-        <TextView
+        <Button
             android:id="@+id/all_items"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/select_all"
             android:textSize="16sp"
-            android:textColor="#9495a5"
             android:fontFamily="@font/index"
+            android:background="@android:color/transparent"
+            android:textFontWeight="700"
+            android:textColor="#9495a5"
+            android:textAllCaps="false"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/active_items" />
-        <TextView
+        <Button
             android:id="@+id/active_items"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:text="@string/active_list"
-            android:textColor="#9495a5"
             android:fontFamily="@font/index"
+            android:background="@android:color/transparent"
+            android:textFontWeight="700"
+            android:textColor="#9495a5"
+            android:textAllCaps="false"
             app:layout_constraintStart_toEndOf="@id/all_items"
             app:layout_constraintEnd_toStartOf="@id/completed_items"
             app:layout_constraintTop_toTopOf="parent" />
-        <TextView
+        <Button
             android:id="@+id/completed_items"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:text="@string/completed_list"
-            android:textColor="#9495a5"
             android:fontFamily="@font/index"
+            android:textFontWeight="700"
+            android:textColor="#9495a5"
+            android:textAllCaps="false"
+            android:background="@android:color/transparent"
             app:layout_constraintStart_toEndOf="@id/active_items"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

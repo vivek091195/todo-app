@@ -1,26 +1,28 @@
 package com.example.todolist.view
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.viewModelScope
-import com.example.todolist.R
 import com.example.todolist.databinding.MainBinding
+import com.example.todolist.model.ActiveTodoSection
 import com.example.todolist.model.Todo
 import com.example.todolist.model.TodoStates
 import com.example.todolist.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
+private var activeSection: Enum<ActiveTodoSection> = ActiveTodoSection.ALL
 class MainActivity : ComponentActivity() {
     private lateinit var mainBinding: MainBinding
     private var enteredText: String = ""
     val mainViewModel by viewModels<MainViewModel>()
-    val adapter = TodoAdapter()
+    val adapter = TodoAdapter {
+        completeTodoClickHandler(it)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainBinding = MainBinding.inflate(layoutInflater)
@@ -49,7 +51,7 @@ class MainActivity : ComponentActivity() {
             if(enteredText.isEmpty())
                 return@setOnClickListener
             mainViewModel.storeTodo(it.context, Todo(
-                1,
+                Random.nextInt(100_000),
                 enteredText,
                 TodoStates.ACTIVE,
                 System.currentTimeMillis()
@@ -58,7 +60,22 @@ class MainActivity : ComponentActivity() {
         }
 
         mainBinding.clearCompleteBtn.setOnClickListener {
-            mainViewModel.clearTodos(it.context)
+            mainViewModel.clearCompletedTodos(it.context)
+        }
+
+        mainBinding.allItems.setOnClickListener {
+            activeSection = ActiveTodoSection.ALL
+            adapter.submitList(mainViewModel.todoState.value.allTodos)
+        }
+
+        mainBinding.activeItems.setOnClickListener {
+            activeSection = ActiveTodoSection.ACTIVE
+            adapter.submitList(mainViewModel.todoState.value.activeTodos)
+        }
+
+        mainBinding.completedItems.setOnClickListener {
+            activeSection = ActiveTodoSection.COMPLETED
+            adapter.submitList(mainViewModel.todoState.value.completedTodos)
         }
 
         mainBinding.todoList.adapter = adapter
@@ -80,8 +97,17 @@ class MainActivity : ComponentActivity() {
                     mainBinding.filterSection.isVisible = true
                     mainBinding.instruction.isVisible = true
                 }
-                adapter.submitList(it.allTodos)
+
+                when(activeSection) {
+                    ActiveTodoSection.ACTIVE -> adapter.submitList(it.activeTodos)
+                    ActiveTodoSection.COMPLETED -> adapter.submitList(it.activeTodos)
+                    else -> adapter.submitList(it.allTodos)
+                }
             }
         }
+    }
+
+    private fun completeTodoClickHandler(todo: Todo) {
+        mainViewModel.storeTodo(this, todo)
     }
 }

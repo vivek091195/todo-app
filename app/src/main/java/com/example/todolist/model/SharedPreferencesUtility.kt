@@ -12,9 +12,15 @@ object SharedPreferencesUtility {
     private val gson = Gson()
 
     fun writeToPreferences(context: Context, todo: Todo) {
-        val sharedPrefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val sharedPrefs: SharedPreferences =
+            context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val storedTodo = readFromPreferences(context).toMutableList()
-        storedTodo.add(todo)
+        val existingTodo = storedTodo.filter { stored -> stored.id == todo.id }
+        if (existingTodo.isEmpty()) {
+            storedTodo.add(todo)
+        } else {
+            existingTodo[0].status = todo.status
+        }
 
         val editor: SharedPreferences.Editor = sharedPrefs.edit()
         editor.putString(TODO_KEY, gson.toJson(storedTodo))
@@ -22,7 +28,8 @@ object SharedPreferencesUtility {
     }
 
     fun readFromPreferences(context: Context): List<Todo> {
-        val sharedPrefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val sharedPrefs: SharedPreferences =
+            context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val todoJsonList = sharedPrefs.getString(TODO_KEY, null) ?: return emptyList()
 
         return try {
@@ -33,8 +40,19 @@ object SharedPreferencesUtility {
         }
     }
 
+    fun clearCompletedPreferences(context: Context) {
+        val storedTodo = readFromPreferences(context).toMutableList()
+        clearPreferences(context)
+        storedTodo.filter { it.status == TodoStates.COMPLETED }
+            .forEach { storedTodo.remove(it) }
+        for (todo in storedTodo) {
+            writeToPreferences(context, todo)
+        }
+    }
+
     fun clearPreferences(context: Context) {
-        val sharedPrefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val sharedPrefs: SharedPreferences =
+            context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val editor: SharedPreferences.Editor = sharedPrefs.edit()
         editor.clear()
         editor.apply()
